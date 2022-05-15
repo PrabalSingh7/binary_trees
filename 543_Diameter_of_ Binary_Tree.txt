@@ -1,0 +1,90 @@
+QUESTION :-
+
+
+Given the root of a binary tree, return the length of the diameter of the tree.
+The diameter of a binary tree is the length of the longest path between any two nodes in a tree. 
+This path may or may not pass through the root.
+The length of a path between two nodes is represented by the number of edges between them.
+
+ Example 1:
+Input: root = [1,2,3,4,5]
+Output: 3
+Explanation: 3 is the length of the path [4,2,1,3] or [5,2,1,3].
+
+ Example 2:
+Input: root = [1,2]
+Output: 1
+ 
+
+ Constraints:
+The number of nodes in the tree is in the range [1, 104].
+-100 <= Node.val <= 100
+
+
+
+
+
+CODE :- 
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public: 
+    
+    //APPROACH 1 : 
+//     int height(TreeNode* root)  {
+//         if(root == NULL)
+//             return 0;
+//         return max( height(root->right),height(root->left) ) + 1;
+//     }
+    
+//     int diameterOfBinaryTree(TreeNode* root) {
+//         if(root == NULL)
+//             return 0;
+        
+//         int l = diameterOfBinaryTree(root->left);
+//         int r = diameterOfBinaryTree(root->right);
+//         int diam = height(root->left)+height(root->right);  //as per question's counting way
+        
+//         return max(l,max(r,diam)) ;      
+//     }
+    
+    
+    
+    // APPROACH 2 (optimized) : using pair<int,int> as pair<diamter,height> to avoid calculating the height
+     of every node again and again , thu8s improving time complexity as comp to the above approach.
+    
+    pair<int,int> diameterFast(TreeNode *root)   {
+        
+        if(root==NULL)  {
+            pair<int,int> p = make_pair(0,0); //as for NULL node diameter = height = 0
+            return p;
+        }
+        
+        pair<int,int> lft = diameterFast(root->left);
+        pair<int,int> rght = diameterFast(root->right);
+        
+        int op1 = lft.first;
+        int op2 = rght.first;
+        int op3 = lft.second + rght.second;
+        
+        pair<int,int> ans;
+        ans.first = max(op1,max(op2,op3));  //implementing how diameter is calculated
+        ans.second = max(lft.second,rght.second) +1;    //implementing how height calculated
+    
+        return ans;
+    }
+    
+    int diameterOfBinaryTree(TreeNode* root)    {
+        return diameterFast(root).first;
+    }
+};
