@@ -72,4 +72,39 @@ public:
     
     return result;    
     }
+
+
+
+        
+
+
+// APPROACH :- recursive solution
+//         -> we tracking the level .
+//         -> whenever a new level comes, we'll store data
+//               (automatically the node will be the right most)
+
+
+    void solve(TreeNode* root, vector<int> &ans, int level) {
+
+        if(root==NULL)
+            return ;
+
+        if(level > ans.size())  //when entering a new level,storing its rightmost root data
+            ans.push_back(root->val);
+
+        solve(root->right,ans,level+1);
+        solve(root->left,ans,level+1);
+
+    }
+
+
+    vector<int> rightSideView(TreeNode *root)    {
+
+        vector<int> ans;
+        solve(root,ans,1);
+        return ans;
+
+    }
+
+    
 };
