@@ -82,3 +82,37 @@ vector<int> leftView(Node *root)
    return res;
    
 }
+
+
+
+
+
+
+
+// APPROACH :- recursive solution
+//         -> we tracking the level .
+//         -> whenever a new level comes, we'll store data
+//               (automatically the node will be the eft most)
+
+
+// void solve(Node* root, vector<int> &ans, int level) {
+    
+//     if(root==NULL)
+//         return NULL;
+        
+//     if(level > ans.size())  //when entering a new level,storing its leftmost root data
+//         ans.push_back(root->data);
+        
+//     solve(root->left,ans,level+1);
+//     solve(root->right,ans,level+1);
+    
+// }
+
+
+// vector<int> leftView(Node *root)    {
+    
+//     vector<int> ans;
+//     solve(root,ans,0);
+//     return ans;
+    
+// }
