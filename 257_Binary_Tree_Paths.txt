@@ -1,0 +1,83 @@
+        QUESTION:-
+
+257. Binary Tree Paths
+Easy
+
+Given the root of a binary tree, return all root-to-leaf paths in any order.
+A leaf is a node with no children.
+ 
+ Example 1:
+Input: root = [1,2,3,null,5]
+Output: ["1->2->5","1->3"]
+ Example 2:
+Input: root = [1]
+Output: ["1"]
+ 
+ Constraints:
+The number of nodes in the tree is in the range [1, 100].
+-100 <= Node.val <= 100
+
+Accepted:512,568
+Submissions:871,239
+
+
+
+        ANSWER :-
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+
+    // APPROACH :- using recursive approach:
+//     1. everytime we reach a leaf node, we push back the path string into ans vector;
+//     2. clear the string , so new path can be stored freshky.
+//     3. traverse left and right.
+    
+    void ways(TreeNode* root,string paths,vector<string> & ans)   {
+        
+        if(root==NULL)  
+            return ;
+        
+        int data = root->val;
+        paths += to_string(data);
+        paths += "->";
+        
+        if(root->left==NULL && root->right==NULL)  {
+            paths.pop_back();      //popping back the "->" in front of leaf node as its 
+            paths.pop_back();      // not required  over there 
+            ans.push_back(paths);   //pushing back the string till one leaf node
+            paths.clear();  //clearing the path string , so new string can be put.
+            return ;
+        }  
+        
+         ways(root->left,paths,ans);
+         ways(root->right,paths,ans); 
+        
+        
+    }
+    
+    
+    vector<string> binaryTreePaths(TreeNode* root) {
+        
+        string paths;
+        vector<string> ans;
+        
+        ways(root,paths,ans);
+        
+        return ans;
+        
+    }
+
+};
+
