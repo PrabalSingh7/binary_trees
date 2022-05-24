@@ -1,0 +1,152 @@
+    QUESTION:-
+
+
+105. Construct Binary Tree from Preorder and Inorder Traversal
+Medium
+
+Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and 
+inorder is the inorder traversal of the same tree, construct and return the binary tree.
+
+ Example 1:
+Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+Output: [3,9,20,null,null,15,7]
+ Example 2:
+Input: preorder = [-1], inorder = [-1]
+Output: [-1]
+ 
+ Constraints:
+ _> 1 <= preorder.length <= 3000
+ _> inorder.length == preorder.length
+ _> -3000 <= preorder[i], inorder[i] <= 3000
+ _> preorder and inorder consist of unique values.
+ _> Each value of inorder also appears in preorder.
+ _> preorder is guaranteed to be the preorder traversal of the tree.
+ _> inorder is guaranteed to be the inorder traversal of the tree.
+
+Accepted:711,228
+Submissions:1,228,564
+
+
+
+        ANSWER :-
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+// APPROACH :- using recurssive approach :-
+//     1. as inorder is LNR, and preOrtder is NLR.
+//     2. so taking the element (rootElemnet) from preorder.
+//     3. finding it in inorder & returning its index(position_in_inOrder).{aka position}
+//     4. start constructing the BT, making the root with value = rootElement.
+//     5. putting left child of root as left half of inorder vector from o to position-1.
+//     6. putting right child of root as left half of inorder vector from position+1 to end.
+    
+    
+    //helping function : return the index of element in InOrder
+    int findPosition(int rootElement, vector<int>& inorder, int n)  {
+        
+        for(int i = 0 ; i<n ; i++)    {
+            if(inorder[i] == rootElement)
+                return i;
+        }
+        return  -1;
+        
+    }
+    
+    TreeNode* solve(vector<int>& preorder, vector<int>& inorder, int &preOrderIndex, int inOrderStart, int inOrderEnd, int n)    {
+        
+        //base cases
+        if(inOrderStart > inOrderEnd)
+            return NULL;
+        if(preOrderIndex >= n)
+            return NULL;
+        
+        //taking out root element from preOrder and finding it in InOder usng helping function
+        int rootElement = preorder[preOrderIndex++];
+        int position_in_inOrder = findPosition(rootElement,inorder,n);
+        
+        //construction a root node for tree
+        TreeNode* root = new TreeNode(rootElement);
+        
+        //recurssive calls for left and right subtree respectively
+        root->left = solve(preorder,inorder,preOrderIndex,inOrderStart,position_in_inOrder-1,n);
+        root->right = solve(preorder,inorder,preOrderIndex,position_in_inOrder+1,inOrderEnd,n);
+
+        return root;
+    }
+    
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        
+        int preOrderIndex = 0;
+        int n = inorder.size();
+        
+        return solve(preorder, inorder, preOrderIndex, 0, n-1, n);
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+//     SLIGHT OPTIMIZATION :
+    //as when using find index function we have to iterate over entire inorder vector to find   rootElement , so to optimize that we will use a map of <int,int> ie <elemnet,position>. So that we can decrease T(O) from O(n) to O(1).
+
+    
+    //helping function : mapping the index of element in InOrder with its index.
+    void mapping(map<int,int> &element_index, vector<int>& inorder, int n)  {
+        
+        for(int i = 0 ; i<n ; i++)    {
+            element_index[inorder[i]] = i;
+        }
+        
+    }
+    
+    
+    TreeNode* solve(vector<int>& preorder, vector<int>& inorder, int &preOrderIndex, int inOrderStart, int inOrderEnd, int n, map<int,int> &element_index)    {
+        
+        //base cases
+        if(inOrderStart > inOrderEnd)
+            return NULL;
+        if(preOrderIndex >= n)
+            return NULL;
+        
+        //taking out root element from preOrder and finding it in InOder usng helping function
+        int rootElement = preorder[preOrderIndex++];
+        int position_in_inOrder = element_index[rootElement];
+        
+        //construction a root node for tree
+        TreeNode* root = new TreeNode(rootElement);
+        
+        //recurssive calls for left and right subtree respectively
+        root->left = solve(preorder,inorder,preOrderIndex,inOrderStart,position_in_inOrder-1,n,element_index);
+        root->right = solve(preorder,inorder,preOrderIndex,position_in_inOrder+1,inOrderEnd,n,element_index);
+
+        return root;
+    }
+    
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        
+        int preOrderIndex = 0;
+        int n = inorder.size();
+        map<int,int> mp;            
+        mapping(mp,inorder,n);
+        
+        return solve(preorder, inorder, preOrderIndex, 0, n-1, n, mp);
+        
+    }
+
+};
