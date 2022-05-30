@@ -1,0 +1,78 @@
+        QUESTION :-   
+
+404. Sum of Left Leaves
+Easy
+
+Given the root of a binary tree, return the sum of all left leaves.
+A leaf is a node with no children. A left leaf is a leaf that is the left child of another node.
+
+ Example 1:
+Input: root = [3,9,20,null,null,15,7]
+Output: 24
+Explanation: There are two left leaves in the binary tree, with values 9 and 15 respectively.
+ Example 2:
+Input: root = [1]
+Output: 0
+ 
+ Constraints:
+The number of nodes in the tree is in the range [1, 1000].
+-1000 <= Node.val <= 1000
+
+Accepted:352,821
+Submissions:638,429
+
+
+        
+        ANSWER :-
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+// APPROACH :-
+//     simply, we'll traverse in the tree using the following algo :
+//         -> if left child exists, 
+//             ->if that left child is a leaf node , then add it so sum.
+//             ->if its not a leaf node, just simply traverse in it.
+//         -> if left does'nt exist , then go right
+    
+    void solve(TreeNode* root, int &sum) {
+        
+        if(root==NULL)
+            return;
+        
+        if(root->left)  {
+            
+            if(root->left->left == NULL && root->left->right == NULL ) 
+                sum += root->left->val;
+            
+            solve(root->left,sum);
+            
+        }
+        
+        solve(root->right,sum);
+        
+        return;
+        
+    }
+    
+    int sumOfLeftLeaves(TreeNode* root) {
+        
+        int sum = 0 ;
+        solve(root,sum);
+        
+        return sum;
+        
+    }
+};
