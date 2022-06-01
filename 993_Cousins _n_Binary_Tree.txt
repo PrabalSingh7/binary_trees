@@ -1,0 +1,117 @@
+
+    QUESTION :-
+
+993. Cousins in Binary Tree
+Easy
+
+Given the root of a binary tree with unique values and the values of two different nodes of the tree x and y, 
+return true if the nodes corresponding to the values x and y in the tree are cousins, or false otherwise.
+Two nodes of a binary tree are cousins if they have the same depth with different parents.
+Note that in a binary tree, the root node is at the depth 0, and children of each depth k node are at the depth k + 1.
+
+ Example 1:
+Input: root = [1,2,3,4], x = 4, y = 3
+Output: false
+ Example 2:
+Input: root = [1,2,3,null,4,null,5], x = 5, y = 4
+Output: true
+ Example 3:
+Input: root = [1,2,3,null,4], x = 2, y = 3
+Output: false
+ 
+ Constraints:
+The number of nodes in the tree is in the range [2, 100].
+1 <= Node.val <= 100
+Each node has a unique value.
+x != y
+x and y are exist in the tree.
+
+Accepted:209,068
+Submissions:388,257
+
+
+
+    ANSWER :-
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+
+// APPROACH :-
+//     1. we'll traverse using the level order traversal
+//     2. keep two xD,yD variables for storing the depths of x and y.
+//     3. initialize xD = -1, y= -2;   {initialized as non positive because depth can never be non positive & also not equal so that they dont create problem in the corner cases.}
+//     4. store the level on which x or y is found in respective xD or yD.
+//     5. check for the condition if two childs of a node are x,y : then return false as its same parent node.
+//     6. at end check if xD == yD and return true if they are or else false.
+    
+    
+    
+    bool isCousins(TreeNode* root, int x, int y) {
+        
+        queue<TreeNode*> q;
+        int xD = -2;
+        int yD = -1;
+        int level = 0;
+        
+        //if root node itself is x or y, and updating its depth as 0.
+        if(root->val==x)
+            xD = 0;
+        if(root->val==y)
+            yD = 0;
+        
+        q.push(root);
+        
+        while(!q.empty())   {
+            
+            int size = q.size();
+            
+            for(int i=0;i<size;i++) {
+                
+                TreeNode* front = q.front();
+                q.pop();
+                
+                //checking if the freshly popped node is x or y , then update its depth accordingly
+                if(front->val==x)   
+                    xD = level;
+                if(front->val==y)
+                    yD = level;
+                
+                if(front->left && front->right)   { //check if x,y dont have same parent
+                    if(front->left->val == x && front->right->val == y)
+                        return false;
+                    if(front->left->val == y && front->right->val == x)
+                        return false;
+                }
+                
+                if(front->left)
+                    q.push(front->left);
+                if(front->right)
+                    q.push(front->right);
+                
+            }
+            
+            //level incremented by 1, after each level .
+            level++; 
+            
+        }
+        
+        if(xD != yD)    //check if x,y have same depth or no
+            return false;
+        else
+            return true;
+        
+    }
+    
+};
