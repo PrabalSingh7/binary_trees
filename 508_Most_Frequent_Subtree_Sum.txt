@@ -1,0 +1,91 @@
+
+    QUESTION :-
+
+508. Most Frequent Subtree Sum
+Medium
+
+Given the root of a binary tree, return the most frequent subtree sum. If there is a tie, return all the values with the 
+highest frequency in any order.
+The subtree sum of a node is defined as the sum of all the node values formed by the subtree rooted at that node 
+(including the node itself).
+
+ Example 1:
+Input: root = [5,2,-3]
+Output: [2,-3,4]
+ Example 2:
+Input: root = [5,2,-5]
+Output: [2]
+ 
+ Constraints:
+The number of nodes in the tree is in the range [1, 104].
+-105 <= Node.val <= 105
+
+Accepted:113,542
+Submissions:178,617
+
+
+
+    ANSWER :-
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    int sumSubtree(TreeNode* root)  {
+        if(root==NULL)  return 0;
+        if(root->left==NULL && root->right==NULL)   return root->val;
+        int l = sumSubtree(root->left);
+        int r = sumSubtree(root->right);
+        return l+r+root->val;
+            
+    }
+    
+    void traverse(TreeNode* root, unordered_map<int,int> &mp )    {
+        
+        if(root==NULL)
+            return;
+        
+        if(root->left==NULL && root->right==NULL)   {
+            mp[root->val]++;
+            return;
+        }
+        
+        int s = sumSubtree(root);
+        mp[s]++;
+        
+        traverse(root->left,mp);
+        traverse(root->right,mp);
+
+        return;
+    }
+    
+    vector<int> findFrequentTreeSum(TreeNode* root) {
+        
+        vector<int> res;
+        unordered_map<int,int> mp;
+        
+        traverse(root,mp);
+        int maxF = INT_MIN;
+        for(auto it : mp )  {
+            cout<<it.first<<"-"<<it.second<<"\n";
+            if(it.second > maxF)   {
+                res.clear();
+                res.push_back(it.first);
+                maxF = it.second;
+            }
+            else if(it.second == maxF)
+                res.push_back(it.first);
+        }
+        return res;
+    }
+};
